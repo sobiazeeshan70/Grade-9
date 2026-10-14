@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HTML Lab: SSC Computer Science</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef2f7; --card:#ffffff; --ink:#0f1b2d; --mute:#55627a; --line:#d3dbe8;
+  --accent:#2447d6; --accent-ink:#ffffff; --mark:#ffe36e; --ok:#157a3d; --bad:#b42318;
+  --code-bg:#0f1b2d; --code-ink:#e6edf8; --soft:#e4eafb;
+  --sans:"Lexend",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,Menlo,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1220; --card:#131c2e; --ink:#e8eefb; --mute:#97a5c0; --line:#26334d;
+    --accent:#7b97ff; --accent-ink:#0b1220; --mark:#6b5a10; --ok:#4ade80; --bad:#f87171;
+    --code-bg:#070c16; --code-ink:#e6edf8; --soft:#1b2745;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1220; --card:#131c2e; --ink:#e8eefb; --mute:#97a5c0; --line:#26334d;
+  --accent:#7b97ff; --accent-ink:#0b1220; --mark:#6b5a10; --ok:#4ade80; --bad:#f87171;
+  --code-bg:#070c16; --code-ink:#e6edf8; --soft:#1b2745;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;font-size:16px}
+header{padding:20px 20px 8px;max-width:1280px;margin:0 auto}
+header h1{margin:0;font-size:1.5rem;font-weight:700;letter-spacing:-.01em}
+header p{margin:4px 0 0;color:var(--mute);font-size:.92rem;max-width:70ch}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-top:14px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s}
+.barlabel{font-size:.8rem;color:var(--mute);margin-top:6px}
+nav{display:flex;gap:8px;overflow-x:auto;padding:12px 20px;max-width:1280px;margin:0 auto;scrollbar-width:thin}
+nav button{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:.85rem;
+  padding:8px 12px;border-radius:8px;cursor:pointer;text-align:left;line-height:1.3}
+nav button small{display:block;color:var(--mute);font-size:.72rem}
+nav button[aria-current="true"]{border-color:var(--accent);background:var(--soft);box-shadow:inset 0 -3px 0 var(--accent)}
+nav button.done::after{content:" ✓";color:var(--ok);font-weight:700}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+main{max-width:1280px;margin:0 auto;padding:8px 20px 48px;display:grid;gap:20px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:960px){main{grid-template-columns:minmax(0,5fr) minmax(0,6fr)}}
+section.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+.panel h2{margin:0 0 4px;font-size:1.25rem}
+.panel h3{margin:22px 0 8px;font-size:1rem}
+.slo{color:var(--mute);font-size:.82rem;margin:0 0 14px}
+.panel p{margin:8px 0}
+code,.k{font-family:var(--mono);font-size:.85em;background:var(--soft);padding:1px 6px;border-radius:4px}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:500;color:var(--mute);font-size:.8rem}
+.tip{border-left:4px solid var(--mark);background:color-mix(in srgb,var(--mark) 30%,transparent);padding:8px 12px;border-radius:0 8px 8px 0;margin:14px 0;font-size:.9rem}
+ol.steps{padding-left:20px;margin:8px 0}
+.editor-wrap{display:flex;flex-direction:column;gap:12px;min-width:0}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tools .name{font-family:var(--mono);font-size:.82rem;color:var(--mute);margin-right:auto}
+.btn{font:inherit;font-size:.85rem;padding:7px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+textarea{width:100%;min-height:260px;resize:vertical;background:var(--code-bg);color:var(--code-ink);border:0;border-radius:10px;
+  padding:14px;font-family:var(--mono);font-size:.85rem;line-height:1.6;tab-size:2;white-space:pre;overflow:auto}
+.preview{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.preview .chrome{display:flex;gap:6px;align-items:center;padding:7px 10px;background:var(--soft);border-bottom:1px solid var(--line);font-size:.75rem;color:var(--mute)}
+.preview .chrome i{width:9px;height:9px;border-radius:50%;background:var(--line);display:inline-block}
+.preview .chrome span{margin-left:6px;font-family:var(--mono)}
+iframe{display:block;width:100%;height:300px;border:0;background:#fff}
+.check{list-style:none;padding:0;margin:8px 0}
+.check li{display:flex;gap:10px;align-items:flex-start;padding:6px 0;font-size:.9rem}
+.check li::before{content:"";flex:0 0 18px;height:18px;margin-top:3px;border:2px solid var(--line);border-radius:5px}
+.check li.ok::before{background:var(--ok);border-color:var(--ok);content:"✓";color:#fff;font-size:12px;line-height:14px;text-align:center}
+.check li.ok{color:var(--ink)}
+.quiz .q{margin:14px 0}
+.quiz .q p{font-weight:500}
+.opts{display:grid;gap:6px}
+.opts button{font:inherit;font-size:.9rem;text-align:left;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.opts button.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 15%,transparent)}
+.opts button.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 15%,transparent)}
+.why{font-size:.85rem;color:var(--mute);margin-top:6px}
+.pager{display:flex;justify-content:space-between;margin-top:18px}
+.cap{font-size:.78rem;color:var(--mute);margin:0}
+@media(prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>HTML Lab</h1>
+  <p>Computer Science SSC, Chapter 3. Read the idea, edit the code on the right, watch the page change, then tick off the challenge.</p>
+  <div class="bar" aria-hidden="true"><i id="barfill"></i></div>
+  <div class="barlabel" id="barlabel"></div>
+</header>
+<nav id="nav" aria-label="Lessons"></nav>
+<main>
+  <section class="panel" id="learn" aria-live="polite"></section>
+  <div class="editor-wrap">
+    <section class="panel">
+      <div class="tools">
+        <span class="name" id="fname">page.html</span>
+        <button class="btn" id="reset">Reset code</button>
+        <button class="btn primary" id="run">Run</button>
+      </div>
+      <div style="height:10px"></div>
+      <label for="code" class="cap">Edit the HTML here. The page updates as you type.</label>
+      <textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+    </section>
+    <div class="preview">
+      <div class="chrome"><i></i><i></i><i></i><span id="ptitle">Browser preview</span></div>
+      <iframe id="frame" title="Page preview" sandbox="allow-scripts"></iframe>
+    </div>
+    <section class="panel">
+      <h3 style="margin-top:0">Challenge</h3>
+      <p class="cap" id="chint"></p>
+      <ul class="check" id="checks"></ul>
+    </section>
+  </div>
+</main>
+
+<script>
+(function(){
+  var SAMPLE_IMG='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"><rect width="300" height="200" fill="#bfe3f5"/><circle cx="235" cy="55" r="28" fill="#f9b233"/><path d="M0 200 L90 80 L170 200Z" fill="#4d8a5b"/><path d="M110 200 L200 100 L300 200Z" fill="#3b6e49"/></svg>');
+  var BG_IMG='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="#fff8d6"/><circle cx="10" cy="10" r="4" fill="#f4c542"/><circle cx="30" cy="30" r="4" fill="#f4c542"/></svg>');
+
+  var L=[
+  {
+    id:'3.2', short:'Introduction', slo:'SLO 3.2.1, 3.2.2',
+    title:'What is HTML?', file:'first.html',
+    learn:
+    '<p><b>Hypertext Markup Language (HTML)</b> is the standard language used to create webpages. <i>Hypertext</i> means text that contains links to other pages. <i>Markup</i> means tags that tell the browser how to show the content. HTML is not a programming language: it describes a page, it does not calculate anything.</p>'+
+    '<h3>Create, save and display a page</h3>'+
+    '<ol class="steps"><li>Open a text editor such as Notepad.</li><li>Type the HTML code.</li><li>Choose File, then Save As. Type a name that ends in <code>.html</code>, for example <code>first.html</code>, and set "Save as type" to All Files.</li><li>Double-click the saved file. The browser opens it and displays the webpage.</li></ol>'+
+    '<h3>Skeleton of every page</h3>'+
+    '<div class="tbl"><table><tr><th>Tag</th><th>Purpose</th></tr>'+
+    '<tr><td><code>&lt;html&gt;</code></td><td>Wraps the whole page</td></tr>'+
+    '<tr><td><code>&lt;head&gt;</code></td><td>Information about the page (not shown on the page)</td></tr>'+
+    '<tr><td><code>&lt;title&gt;</code></td><td>Text on the browser tab</td></tr>'+
+    '<tr><td><code>&lt;body&gt;</code></td><td>Everything the visitor sees</td></tr></table></div>'+
+    '<div class="tip">Most tags come in pairs: an opening tag <code>&lt;p&gt;</code> and a closing tag <code>&lt;/p&gt;</code> with a slash.</div>',
+    code:'<html>\n<head>\n<title>My First Page</title>\n</head>\n<body>\n<h1>Hello, World!</h1>\n<p>This is my first webpage.</p>\n</body>\n</html>',
+    hint:'Change the starter page so it is about you.',
+    checks:[
+      ['Change the title so it is no longer "My First Page"', /<title>\s*(?!My First Page\s*<)[^<\s][^<]*<\/title>/i],
+      ['Change the heading so it is no longer "Hello, World!"', /<h1>\s*(?!Hello, World!\s*<)[^<\s][^<]*<\/h1>/i],
+      ['Keep a <body> section', /<body[^>]*>[\s\S]*<\/body>/i],
+      ['Add a second paragraph (two <p> tags)', /<p[^>]*>[\s\S]*<\/p>[\s\S]*<p[^>]*>[\s\S]*<\/p>/i]
+    ],
+    quiz:[
+      {q:'What does the <title> tag control?',o:['The big heading on the page','The text on the browser tab','The page background','The first paragraph'],a:1,w:'The title sits inside <head> and appears on the browser tab, not on the page itself.'},
+      {q:'Which file name will a browser open as a webpage?',o:['notes.txt','page.docx','first.html','first.html.txt'],a:2,w:'HTML files are saved with the .html extension. A hidden .txt at the end (last option) is a common mistake.'}
+    ]
+  },
+  {
+    id:'3.3.1', short:'Text structure', slo:'SLO 3.3.1',
+    title:'Title, paragraphs, line breaks, spaces and headings', file:'text.html',
+    learn:
+    '<p>Browsers ignore extra spaces and blank lines in your code. You must ask for layout with tags.</p>'+
+    '<div class="tbl"><table><tr><th>You want</th><th>Write</th></tr>'+
+    '<tr><td>Page title</td><td><code>&lt;title&gt;My Page&lt;/title&gt;</code> inside head</td></tr>'+
+    '<tr><td>Paragraph</td><td><code>&lt;p&gt;text&lt;/p&gt;</code></td></tr>'+
+    '<tr><td>Line break</td><td><code>&lt;br&gt;</code> (no closing tag)</td></tr>'+
+    '<tr><td>Extra space</td><td><code>&amp;nbsp;</code> for each space</td></tr>'+
+    '<tr><td>Headings</td><td><code>&lt;h1&gt;</code> largest to <code>&lt;h6&gt;</code> smallest</td></tr></table></div>'+
+    '<div class="tip"><code>&lt;p&gt;</code> adds space above and below. <code>&lt;br&gt;</code> only moves to the next line. Use <code>&lt;h1&gt;</code> for the main heading and <code>&lt;h2&gt;</code> to <code>&lt;h6&gt;</code> for sub-headings.</div>',
+    code:'<html>\n<head>\n<title>My School</title>\n</head>\n<body>\n<h1>My School</h1>\n<p>We study Computer Science.</p>\n</body>\n</html>',
+    hint:'Extend the page using each tool from the table.',
+    checks:[
+      ['Add a sub-heading with <h2>', /<h2[^>]*>[\s\S]*?<\/h2>/i],
+      ['Add the smallest heading, <h6>', /<h6[^>]*>[\s\S]*?<\/h6>/i],
+      ['Break a line inside a paragraph with <br>', /<p[^>]*>[\s\S]*?<br\s*\/?>[\s\S]*?<\/p>/i],
+      ['Insert extra spaces with &nbsp;', /&nbsp;/i],
+      ['Have at least two paragraphs', /<p[^>]*>[\s\S]*<\/p>[\s\S]*<p[^>]*>[\s\S]*<\/p>/i]
+    ],
+    quiz:[
+      {q:'Which tag gives the smallest heading?',o:['<h1>','<h3>','<h6>','<head>'],a:2,w:'h1 is the largest, h6 is the smallest. <head> is not a heading at all.'},
+      {q:'You type five spaces between two words in your code. What does the browser show?',o:['Five spaces','One space','No space','An error'],a:1,w:'Browsers collapse extra spaces into one. Use &nbsp; for each extra space you need.'}
+    ]
+  },
+  {
+    id:'3.3.2', short:'Text formatting', slo:'SLO 3.3.2',
+    title:'Formatting text', file:'format.html',
+    learn:
+    '<p>Formatting tags wrap the text they change. Always close them, and close the inner tag first.</p>'+
+    '<div class="tbl"><table><tr><th>Effect</th><th>Tag</th></tr>'+
+    '<tr><td>Bold</td><td><code>&lt;b&gt;text&lt;/b&gt;</code></td></tr>'+
+    '<tr><td>Italic</td><td><code>&lt;i&gt;text&lt;/i&gt;</code></td></tr>'+
+    '<tr><td>Underline</td><td><code>&lt;u&gt;text&lt;/u&gt;</code></td></tr>'+
+    '<tr><td>Strikethrough</td><td><code>&lt;strike&gt;text&lt;/strike&gt;</code></td></tr>'+
+    '<tr><td>Superscript (x<sup>2</sup>)</td><td><code>&lt;sup&gt;2&lt;/sup&gt;</code></td></tr>'+
+    '<tr><td>Subscript (H<sub>2</sub>O)</td><td><code>&lt;sub&gt;2&lt;/sub&gt;</code></td></tr>'+
+    '<tr><td>Centre</td><td><code>&lt;center&gt;text&lt;/center&gt;</code></td></tr>'+
+    '<tr><td>Size, colour, face</td><td><code>&lt;font size="5" color="red" face="Arial"&gt;text&lt;/font&gt;</code></td></tr></table></div>'+
+    '<div class="tip">Correct nesting: <code>&lt;b&gt;&lt;i&gt;text&lt;/i&gt;&lt;/b&gt;</code>. Wrong: <code>&lt;b&gt;&lt;i&gt;text&lt;/b&gt;&lt;/i&gt;</code>. Font size runs from 1 (smallest) to 7 (largest).</div>'+
+    '<p class="cap">These tags are the ones your syllabus asks for. Modern websites use CSS for the same jobs.</p>',
+    code:'<html>\n<head>\n<title>Formatting</title>\n</head>\n<body>\n<p>Make this text interesting.</p>\n<p>Area of a square: x2</p>\n<p>Water: H2O</p>\n</body>\n</html>',
+    hint:'Use every formatting tag from the table at least once.',
+    checks:[
+      ['Bold with <b>', /<b>[\s\S]*?<\/b>/i],
+      ['Italic with <i>', /<i>[\s\S]*?<\/i>/i],
+      ['Underline with <u>', /<u>[\s\S]*?<\/u>/i],
+      ['Strikethrough with <strike>', /<(strike|s|del)>[\s\S]*?<\/(strike|s|del)>/i],
+      ['Make x2 a superscript with <sup>', /<sup>[\s\S]*?<\/sup>/i],
+      ['Make H2O a subscript with <sub>', /<sub>[\s\S]*?<\/sub>/i],
+      ['Centre something with <center>', /<center>[\s\S]*?<\/center>/i],
+      ['Use <font> with size, color and face', /<font(?=[^>]*size\s*=)(?=[^>]*color\s*=)(?=[^>]*face\s*=)[^>]*>/i]
+    ],
+    quiz:[
+      {q:'Which code shows H₂O correctly?',o:['H<sup>2</sup>O','H<sub>2</sub>O','H<b>2</b>O','H<u>2</u>O'],a:1,w:'Subscript sits below the line. Superscript sits above it.'},
+      {q:'Which font size attribute gives the largest text?',o:['size="1"','size="4"','size="7"','size="10"'],a:2,w:'HTML font sizes run from 1 to 7, and 7 is the largest.'},
+      {q:'Which nesting is correct?',o:['<b><i>Hi</b></i>','<b><i>Hi</i></b>','<b>Hi<i></b>Hi</i>','</b><i>Hi</i><b>'],a:1,w:'Close tags in reverse order: the last tag opened is the first one closed.'}
+    ]
+  },
+  {
+    id:'3.4', short:'Lists', slo:'SLO 3.4.1',
+    title:'Ordered, unordered and definition lists', file:'lists.html',
+    learn:
+    '<div class="tbl"><table><tr><th>List</th><th>Tags</th><th>Use it for</th></tr>'+
+    '<tr><td>Ordered</td><td><code>&lt;ol&gt;</code> with <code>&lt;li&gt;</code></td><td>Numbered steps, rankings</td></tr>'+
+    '<tr><td>Unordered</td><td><code>&lt;ul&gt;</code> with <code>&lt;li&gt;</code></td><td>Bullet points, items in no order</td></tr>'+
+    '<tr><td>Definition</td><td><code>&lt;dl&gt;</code>, <code>&lt;dt&gt;</code>, <code>&lt;dd&gt;</code></td><td>Terms and their meanings</td></tr></table></div>'+
+    '<p><code>&lt;li&gt;</code> means list item. In a definition list, <code>&lt;dt&gt;</code> is the term and <code>&lt;dd&gt;</code> is its description, which the browser indents.</p>'+
+    '<div class="tip">Extra: <code>&lt;ol type="a"&gt;</code> gives letters, <code>&lt;ol type="I"&gt;</code> gives Roman numerals, <code>&lt;ul type="square"&gt;</code> gives square bullets.</div>',
+    code:'<html>\n<body>\n<h2>Steps to save a page</h2>\n<ol>\n  <li>Open Notepad</li>\n  <li>Type the code</li>\n</ol>\n</body>\n</html>',
+    hint:'Add the other two kinds of list below the first.',
+    checks:[
+      ['Ordered list: <ol> with at least two <li>', /<ol[^>]*>(?=[\s\S]*<li[^>]*>[\s\S]*<\/li>[\s\S]*<li)[\s\S]*<\/ol>/i],
+      ['Unordered list: <ul> with at least two <li>', /<ul[^>]*>(?=[\s\S]*<li[^>]*>[\s\S]*<\/li>[\s\S]*<li)[\s\S]*<\/ul>/i],
+      ['Definition list: <dl> wrapper', /<dl[^>]*>[\s\S]*<\/dl>/i],
+      ['Inside it, a term with <dt>', /<dt[^>]*>[\s\S]*?<\/dt>/i],
+      ['Inside it, a description with <dd>', /<dd[^>]*>[\s\S]*?<\/dd>/i]
+    ],
+    quiz:[
+      {q:'You are writing the steps to boil an egg. Which list fits best?',o:['<ul>','<ol>','<dl>','<dd>'],a:1,w:'Steps happen in order, so use an ordered list.'},
+      {q:'In a definition list, which tag holds the meaning of a term?',o:['<dt>','<dd>','<dl>','<li>'],a:1,w:'dt = definition term, dd = definition description, dl = definition list.'}
+    ]
+  },
+  {
+    id:'3.5.1', short:'Images', slo:'SLO 3.5.1',
+    title:'Inserting and sizing images', file:'image.html',
+    learn:
+    '<p>The <code>&lt;img&gt;</code> tag has no closing tag. Its details go in attributes.</p>'+
+    '<div class="tbl"><table><tr><th>Attribute</th><th>Meaning</th></tr>'+
+    '<tr><td><code>src</code></td><td>File name or path of the image</td></tr>'+
+    '<tr><td><code>border</code></td><td>Border thickness in pixels</td></tr>'+
+    '<tr><td><code>width</code></td><td>Width in pixels</td></tr>'+
+    '<tr><td><code>height</code></td><td>Height in pixels</td></tr>'+
+    '<tr><td><code>alt</code></td><td>Alternate text shown if the image cannot load, and read aloud by screen readers</td></tr></table></div>'+
+    '<p>Example: <code>&lt;img src="cat.jpg" width="200" height="150" border="2" alt="A sleeping cat"&gt;</code></p>'+
+    '<div class="tip">In this lab the file name <code>sample.svg</code> is a built-in picture. On your computer, keep the image in the same folder as your HTML file and use its real file name.</div>'+
+    '<p class="cap">Try a wrong file name to see the <code>alt</code> text appear.</p>',
+    code:'<html>\n<body>\n<h2>My picture</h2>\n<img src="sample.svg">\n</body>\n</html>',
+    hint:'Complete the image tag with all four attributes.',
+    checks:[
+      ['Insert an image with <img src="...">', /<img[^>]*\ssrc\s*=\s*["'][^"']+["']/i],
+      ['Add a border', /<img[^>]*\sborder\s*=\s*["']?\d+/i],
+      ['Set the width', /<img[^>]*\swidth\s*=\s*["']?\d+/i],
+      ['Set the height', /<img[^>]*\sheight\s*=\s*["']?\d+/i],
+      ['Write alternate text with alt', /<img[^>]*\salt\s*=\s*["'][^"']+["']/i]
+    ],
+    quiz:[
+      {q:'What is the alt attribute for?',o:['Making the image bigger','Text shown when the image cannot be displayed','Adding a border','Choosing the file name'],a:1,w:'Alt gives a text description, useful when the file is missing and for screen readers.'},
+      {q:'Which is the correct image tag?',o:['<image src="a.jpg">','<img href="a.jpg">','<img src="a.jpg">','<img>a.jpg</img>'],a:2,w:'The tag is img and the file goes in the src attribute. It has no closing tag.'}
+    ]
+  },
+  {
+    id:'3.5.2', short:'Colours and backgrounds', slo:'SLO 3.5.2',
+    title:'Background colour, foreground colour and background image', file:'colours.html',
+    learn:
+    '<p>These settings go inside the opening <code>&lt;body&gt;</code> tag.</p>'+
+    '<div class="tbl"><table><tr><th>Goal</th><th>Attribute</th></tr>'+
+    '<tr><td>Background colour</td><td><code>bgcolor="lightblue"</code></td></tr>'+
+    '<tr><td>Foreground (text) colour</td><td><code>text="darkred"</code></td></tr>'+
+    '<tr><td>Background image</td><td><code>background="bg.jpg"</code></td></tr></table></div>'+
+    '<p>Colours can be names (<code>red</code>, <code>navy</code>) or hex codes (<code>#ff0000</code>).</p>'+
+    '<p>Example: <code>&lt;body bgcolor="yellow" text="blue"&gt;</code></p>'+
+    '<div class="tip">If you set both a background colour and a background image, the image is drawn on top. Pick text colours that stay readable on your background.</div>'+
+    '<p class="cap">In this lab, <code>bg.svg</code> is a built-in tile pattern.</p>',
+    code:'<html>\n<body>\n<h1>Colourful page</h1>\n<p>Change my colours.</p>\n</body>\n</html>',
+    hint:'Edit the body tag only. The text can stay as it is.',
+    checks:[
+      ['Set a background colour with bgcolor', /<body[^>]*\sbgcolor\s*=\s*["']?[#\w]+/i],
+      ['Set a foreground colour with text', /<body[^>]*\stext\s*=\s*["']?[#\w]+/i],
+      ['Add a background image with background', /<body[^>]*\sbackground\s*=\s*["'][^"']+["']/i]
+    ],
+    quiz:[
+      {q:'Which attribute changes the colour of the text on the whole page?',o:['bgcolor','text','background','color-page'],a:1,w:'text sets the foreground colour in <body>. bgcolor is the background colour.'},
+      {q:'Where do these attributes go?',o:['In <head>','In <title>','In the opening <body> tag','After </html>'],a:2,w:'They are attributes of the body tag, for example <body bgcolor="pink" text="black">.'}
+    ]
+  },
+  {
+    id:'3.6', short:'Hyperlinks', slo:'SLO 3.6.1',
+    title:'Hyperlinks and anchors', file:'links.html',
+    learn:
+    '<p>A hyperlink uses the <b>anchor</b> tag <code>&lt;a&gt;</code>. The text between the tags is what the visitor clicks.</p>'+
+    '<div class="tbl"><table><tr><th>Goal</th><th>Code</th></tr>'+
+    '<tr><td>Link to a web page</td><td><code>&lt;a href="https://example.com"&gt;Visit&lt;/a&gt;</code></td></tr>'+
+    '<tr><td>Create an anchor (a named spot)</td><td><code>&lt;a name="top"&gt;&lt;/a&gt;</code></td></tr>'+
+    '<tr><td>Link to that spot on the same page</td><td><code>&lt;a href="#top"&gt;Go to top&lt;/a&gt;</code></td></tr>'+
+    '<tr><td>Graphical link</td><td><code>&lt;a href="page2.html"&gt;&lt;img src="pic.jpg"&gt;&lt;/a&gt;</code></td></tr></table></div>'+
+    '<p>An <b>anchor</b> marks a place in a page. A link that starts with <code>#</code> jumps to the anchor with that name. A graphical link is an <code>&lt;img&gt;</code> placed inside an <code>&lt;a&gt;</code> tag.</p>'+
+    '<div class="tip">In this lab, clicking a link to another website only shows where it would go. Links that start with # really do scroll.</div>',
+    code:'<html>\n<body>\n<a name="top"></a>\n<h2>Useful links</h2>\n<p>Nothing to click yet.</p>\n<br><br><br><br><br><br><br><br><br><br>\n<p>The bottom of the page.</p>\n</body>\n</html>',
+    hint:'Build all four kinds of link. The page has space at the bottom so you can test the jump.',
+    checks:[
+      ['Link to a web page with <a href="http...">', /<a[^>]*\shref\s*=\s*["']https?:\/\/[^"']+["'][^>]*>[\s\S]*?<\/a>/i],
+      ['Create an anchor with name (or id)', /<a[^>]*\s(name|id)\s*=\s*["'][^"'#]+["'][^>]*>[\s\S]*?<\/a>/i],
+      ['Link within the page with href="#..."', /<a[^>]*\shref\s*=\s*["']#[^"']+["']/i],
+      ['Graphical link: an <img> inside <a>', /<a[^>]*\shref[^>]*>\s*<img[^>]*>\s*<\/a>/i]
+    ],
+    quiz:[
+      {q:'Which attribute holds the address a link goes to?',o:['src','href','name','link'],a:1,w:'href means hypertext reference. src is used by images.'},
+      {q:'What does <a href="#top"> do?',o:['Opens a new website','Jumps to the anchor named "top" on the same page','Downloads a file','Creates an anchor'],a:1,w:'The # means "inside this page". It needs a matching anchor such as <a name="top"></a>.'},
+      {q:'How do you make a picture clickable?',o:['<img href="page.html">','Put <img> inside <a>','<a src="pic.jpg">','<link img>'],a:1,w:'Place the img tag between the opening and closing a tags.'}
+    ]
+  }];
+
+  var $=function(id){return document.getElementById(id)};
+  var cur=0, codes={}, done={}, quizScore={}, timer=null;
+
+  var GUARD='<script>document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;e.preventDefault();var h=a.getAttribute("href");if(!h)return;if(h.charAt(0)==="#"){var id=h.slice(1);var t=document.getElementById(id)||document.getElementsByName(id)[0];if(t)t.scrollIntoView({behavior:"smooth"});}else{alert("In a real browser this link would open:\\n"+h);}});<\/script>';
+
+  function build(code){
+    return code.split('sample.svg').join(SAMPLE_IMG).split('bg.svg').join(BG_IMG)+GUARD;
+  }
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+  function renderNav(){
+    var n=$('nav'); n.innerHTML='';
+    L.forEach(function(l,i){
+      var b=document.createElement('button');
+      b.innerHTML=esc(l.short)+'<small>'+l.slo+'</small>';
+      if(i===cur) b.setAttribute('aria-current','true');
+      if(done[i]) b.className='done';
+      b.onclick=function(){go(i)};
+      n.appendChild(b);
+    });
+    var c=Object.keys(done).length;
+    $('barfill').style.width=(c/L.length*100)+'%';
+    $('barlabel').textContent=c+' of '+L.length+' challenges complete';
+  }
+
+  function renderLearn(){
+    var l=L[cur];
+    var h='<h2>'+esc(l.title)+'</h2><p class="slo">'+l.slo+'</p>'+l.learn;
+    h+='<h3>Quick check</h3><div class="quiz" id="quiz"></div>';
+    h+='<div class="pager"><button class="btn" id="prev"'+(cur===0?' disabled':'')+'>Previous lesson</button><button class="btn primary" id="next"'+(cur===L.length-1?' disabled':'')+'>Next lesson</button></div>';
+    $('learn').innerHTML=h;
+    $('prev').onclick=function(){go(cur-1)};
+    $('next').onclick=function(){go(cur+1)};
+    renderQuiz();
+  }
+
+  function renderQuiz(){
+    var l=L[cur], box=$('quiz'); box.innerHTML='';
+    l.quiz.forEach(function(q,qi){
+      var d=document.createElement('div'); d.className='q';
+      var p=document.createElement('p'); p.textContent=q.q; d.appendChild(p);
+      var o=document.createElement('div'); o.className='opts';
+      var why=document.createElement('div'); why.className='why';
+      q.o.forEach(function(t,oi){
+        var b=document.createElement('button'); b.textContent=t;
+        b.onclick=function(){
+          if(d.getAttribute('data-done')) return;
+          d.setAttribute('data-done','1');
+          var kids=o.children;
+          for(var k=0;k<kids.length;k++){ if(k===q.a) kids[k].className='right'; }
+          if(oi!==q.a) b.className='wrong';
+          why.textContent=(oi===q.a?'Correct. ':'Not quite. ')+q.w;
+        };
+        o.appendChild(b);
+      });
+      d.appendChild(o); d.appendChild(why); box.appendChild(d);
+    });
+  }
+
+  function renderChecks(){
+    var l=L[cur], code=$('code').value, ul=$('checks'), all=true;
+    ul.innerHTML='';
+    l.checks.forEach(function(c){
+      var li=document.createElement('li'), ok=c[1].test(code);
+      if(ok) li.className='ok'; else all=false;
+      li.textContent=c[0]; ul.appendChild(li);
+    });
+    if(all && !done[cur]){ done[cur]=true; renderNav(); }
+  }
+
+  function run(){
+    var code=$('code').value; codes[cur]=code;
+    $('frame').srcdoc=build(code);
+    var m=code.match(/<title>([\s\S]*?)<\/title>/i);
+    $('ptitle').textContent=m&&m[1].trim()?m[1].trim():'Browser preview';
+    renderChecks();
+  }
+
+  function go(i){
+    codes[cur]=$('code').value;
+    cur=i;
+    var l=L[cur];
+    if(codes[cur]===undefined) codes[cur]=l.code;
+    $('code').value=codes[cur];
+    $('fname').textContent=l.file;
+    $('chint').textContent=l.hint;
+    renderNav(); renderLearn(); run();
+    window.scrollTo({top:0});
+  }
+
+  $('code').addEventListener('input',function(){
+    clearTimeout(timer); timer=setTimeout(run,250);
+  });
+  $('code').addEventListener('keydown',function(e){
+    if(e.key==='Tab'){
+      e.preventDefault();
+      var t=this,s=t.selectionStart;
+      t.value=t.value.slice(0,s)+'  '+t.value.slice(t.selectionEnd);
+      t.selectionStart=t.selectionEnd=s+2;
+    }
+  });
+  $('run').onclick=run;
+  $('reset').onclick=function(){ $('code').value=L[cur].code; run(); };
+
+  go(0);
+})();
+</script>
+</body>
+</html>
